@@ -1,0 +1,161 @@
+/* General Styles */
+body {
+    font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #F5F7FA; /* Secondary Color */
+    color: #333333; /* Text Color */
+    line-height: 1.6;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align to the top */
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+h1 {
+    font-size: 28px;
+    color: #333333;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+h2 {
+    font-size: 22px;
+    color: #333333;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #E0E6ED;
+    padding-bottom: 5px;
+}
+
+/* Layout - Desktop (2-column) */
+.content-wrapper {
+    display: flex;
+    gap: 20px; /* Space between columns */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.input-section, .output-section {
+    flex: 1; /* Distribute space equally */
+    min-width: 300px; /* Minimum width for each section before wrapping */
+}
+
+/* Card Styling */
+.card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    padding: 25px;
+    margin-bottom: 20px;
+}
+
+/* Textarea Styles */
+textarea {
+    width: calc(100% - 24px); /* Full width minus padding */
+    height: 180px;
+    padding: 12px;
+    border: 1px solid #E0E6ED; /* Border Color */
+    border-radius: 4px;
+    font-size: 16px;
+    resize: vertical;
+    margin-bottom: 10px;
+    font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+    color: #333333;
+    transition: border-color 0.2s ease-in-out;
+}
+
+textarea:focus {
+    border-color: #4A90E2; /* Primary Color on focus */
+    outline: none;
+}
+
+/* Character Count */
+.char-count {
+    text-align: right;
+    font-size: 14px;
+    color: #666666;
+    margin-bottom: 15px;
+}
+
+/* Controls (Select and Button) */
+.controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 15px;
+}
+
+select {
+    padding: 10px 15px;
+    border: 1px solid #E0E6ED;
+    border-radius: 4px;
+    font-size: 16px;
+    color: #333333;
+    background-color: #ffffff;
+    cursor: pointer;
+    appearance: none; /* Remove default arrow */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%234A90E2%22%20d%3D%22M287%2C188.7L154.7%2C56.4c-4.6-4.6-12-4.6-16.6%2C0L5.4%2C188.7c-4.6%2C4.6-4.6%2C12%2C0%2C16.6l15.8%2C15.8c4.6%2C4.6%2C12%2C4.6%2C16.6%2C0l113.8-113.8l113.8%2C113.8c4.6%2C4.6%2C12%2C4.6%2C16.6%2C0l15.8-15.8C291.5%2C200.7%2C291.5%2C193.3%2C287%2C188.7z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+    flex-grow: 1; /* Allow select to grow */
+    max-width: 200px; /* Limit select width */
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #4A90E2; /* Primary Color */
+    color: #FFFFFF; /* White Text */
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    flex-shrink: 0; /* Prevent button from shrinking */
+}
+
+button:hover {
+    background-color: #357ABD; /* Darker shade for hover */
+}
+
+button:active {
+    background-color: #285E8E; /* Even darker for active state */
+}
+
+#copyButton {
+    background-color: #50E3C2; /* Success Color */
+}
+
+#copyButton:hover {
+    background-color: #3DB79A;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .content-wrapper {
+        flex-direction: column; /* Stack columns vertically */
+    }
+
+    .input-section, .output-section {
+        min-width: unset; /* Remove min-width for stacked layout */
+        width: 100%;
+    }
+
+    .controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    select, button {
+        max-width: 100%; /* Full width for controls in mobile */
+    }
+}

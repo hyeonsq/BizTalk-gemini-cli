@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from groq import Groq
 from dotenv import load_dotenv
@@ -7,8 +7,8 @@ from dotenv import load_dotenv
 # .env 파일에서 환경 변수 로드
 load_dotenv()
 
-app = Flask(__name__)
-# 프론트엔드からの 모든 출처에서의 요청을 허용
+app = Flask(__name__, static_folder='../frontend', static_url_path='')
+# 프론트엔드からの 모든 출처에서의 요청을 허용 (개발 목적으로만, 프로덕션에서는 특정 출처로 제한 권장)
 CORS(app) 
 
 # Groq 클라이언트 초기화
@@ -20,6 +20,14 @@ except Exception as e:
     groq_client = None
     print(f"Error initializing Groq client: {e}")
 
+@app.route('/')
+def serve_index():
+    return send_from_directory(app.static_folder, 'index.html')
+
+@app.route('/<path:filename>')
+def serve_static(filename):
+    return send_from_directory(app.static_folder, filename)
+
 @app.route('/api/convert', methods=['POST'])
 def convert_text():
     """
@@ -28,7 +36,7 @@ def convert_text():
     """
     data = request.json
     original_text = data.get('text')
-    target = data.get('target')
+    target = data.get('audience') # Changed from 'target' to 'audience' to match frontend
 
     if not original_text or not target:
         return jsonify({"error": "텍스트와 변환 대상은 필수입니다."}), 400
@@ -44,11 +52,7 @@ def convert_text():
     
     return jsonify(response_data)
 
-@app.route('/')
-def index():
-    return "BizTone Converter 백엔드 서버가 실행 중입니다."
-
 if __name__ == '__main__':
     # Vercel 환경에서는 gunicorn이 이 파일을 직접 실행하지 않으므로,
     # 이 부분은 로컬 개발 시에만 사용됩니다.
-    app.run(debug=True, port=5000)    
+    app.run(debug=True, port=5000)
