@@ -8,60 +8,48 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-# CORS 설정: 모든 origin에서의 요청을 허용합니다.
-CORS(app)
+# 프론트엔드からの 모든 출처에서의 요청을 허용
+CORS(app) 
 
 # Groq 클라이언트 초기화
+# API 키는 환경 변수 'GROQ_API_KEY'에서 자동으로 로드됩니다.
 try:
-    client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
-    groq_api_key_set = True
+    groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+    print("Groq client initialized successfully.")
 except Exception as e:
-    groq_api_key_set = False
-
-@app.route('/health', methods=['GET'])
-def health_check():
-    """서버 상태를 확인하는 헬스 체크 엔드포인트"""
-    return jsonify({"status": "ok"}), 200
+    groq_client = None
+    print(f"Error initializing Groq client: {e}")
 
 @app.route('/api/convert', methods=['POST'])
 def convert_text():
-    """텍스트 변환을 처리하는 메인 API 엔드포인트"""
-    if not groq_api_key_set:
-        return jsonify({"error": "Groq API 키가 설정되지 않았습니다."}), 500
-
-    data = request.get_json()
-    if not data or 'text' not in data or 'target' not in data:
-        return jsonify({"error": "유효하지 않은 요청입니다. 'text'와 'target' 필드가 필요합니다."}), 400
-
-    input_text = data.get('text')
+    """
+    텍스트 변환을 위한 API 엔드포인트.
+    Sprint 1에서는 실제 변환 로직 대신 더미 데이터를 반환합니다.
+    """
+    data = request.json
+    original_text = data.get('text')
     target = data.get('target')
 
-    # Sprint 1: 간단한 API 연동 테스트 및 더미 응답
-    # 실제 프롬프트 엔지니어링은 다음 스프린트에서 진행합니다.
-    try:
-        chat_completion = client.chat.completions.create(
-            messages=[
-                {
-                    "role": "system",
-                    "content": f"You are a helpful assistant that converts text into a professional tone for a specific audience: {target}."
-                },
-                {
-                    "role": "user",
-                    "content": input_text,
-                }
-            ],
-            model="llama3-8b-8192",
-        )
-        
-        converted_text = chat_completion.choices[0].message.content
-        return jsonify({"converted_text": converted_text})
+    if not original_text or not target:
+        return jsonify({"error": "텍스트와 변환 대상은 필수입니다."}), 400
 
-    except Exception as e:
-        # 실제 프로덕션 환경에서는 로깅을 추가해야 합니다.
-        print(f"An error occurred: {e}")
-        return jsonify({"error": "AI 모델 호출 중 오류가 발생했습니다."}), 500
+    # Sprint 1: 실제 Groq API 호출 대신 더미 응답 반환
+    dummy_response = f"'{original_text}'를 '{target}'에게 보내는 말투로 변환한 결과입니다. (이것은 더미 응답입니다.)"
+    
+    response_data = {
+        "original_text": original_text,
+        "converted_text": dummy_response,
+        "target": target
+    }
+    
+    return jsonify(response_data)
+
+@app.route('/')
+def index():
+    return "BizTone Converter 백엔드 서버가 실행 중입니다."
 
 if __name__ == '__main__':
     # Vercel 환경에서는 gunicorn이 이 파일을 직접 실행하지 않으므로,
     # 이 부분은 로컬 개발 시에만 사용됩니다.
     app.run(debug=True, port=5000)
+    
