@@ -51,5 +51,4 @@ def index():
 if __name__ == '__main__':
     # Vercel 환경에서는 gunicorn이 이 파일을 직접 실행하지 않으므로,
     # 이 부분은 로컬 개발 시에만 사용됩니다.
-    app.run(debug=True, port=5000)
-    
+    app.run(debug=True, port=5000)    
