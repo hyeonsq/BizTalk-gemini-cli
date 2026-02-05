@@ -4,34 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BizTone Converter</title>
-    <link rel="stylesheet" href="css/style.css">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="container">
-        <header>
-            <h1>BizTone Converter</h1>
+<body class="bg-gray-100 text-gray-800 font-sans antialiased min-h-screen flex items-center justify-center p-4">
+    <div class="container w-full max-w-4xl mx-auto">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-extrabold text-gray-900 leading-tight">BizTone Converter</h1>
         </header>
-        <main class="content-wrapper">
-            <section class="input-section card">
-                <h2>원문 입력</h2>
-                <textarea id="inputText" placeholder="여기에 변환할 내용을 입력하세요 (최대 500자)"></textarea>
-                <div class="char-count">
+        <main class="content-wrapper grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
+            <section class="input-section bg-white rounded-xl shadow-2xl p-6 transition-all duration-300 hover:shadow-3xl">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4 pb-2 border-b-2 border-blue-200">원문 입력</h2>
+                <textarea id="inputText" class="w-full h-48 p-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent resize-y mb-4 transition-all duration-200" placeholder="여기에 변환할 내용을 입력하세요 (최대 500자)"></textarea>
+                <div class="char-count text-right text-sm text-gray-600 mb-4">
                     <span id="currentCharCount">0</span> / 500
                 </div>
-                <div class="controls">
-                    <select id="targetAudience">
+                <div class="controls flex flex-col sm:flex-row gap-4 mt-4">
+                    <select id="targetAudience" class="flex-grow p-3 border border-gray-300 rounded-lg bg-white text-gray-700 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 cursor-pointer">
                         <option value="상사">상사 (Upward)</option>
                         <option value="타팀 동료">타팀 동료 (Lateral)</option>
                         <option value="고객">고객 (External)</option>
                     </select>
-                    <button id="convertButton">변환하기</button>
+                    <button id="convertButton" class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition ease-in-out duration-150 shadow-md hover:shadow-lg">변환하기</button>
                 </div>
             </section>
-            <section class="output-section card">
-                <h2>변환 결과</h2>
-                <textarea id="outputText" readonly placeholder="변환된 결과가 여기에 표시됩니다."></textarea>
-                <div class="controls">
-                    <button id="copyButton">복사하기</button>
+            <section class="output-section bg-white rounded-xl shadow-2xl p-6 transition-all duration-300 hover:shadow-3xl">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4 pb-2 border-b-2 border-blue-200">변환 결과</h2>
+                <textarea id="outputText" readonly class="w-full h-48 p-3 border border-gray-300 rounded-lg text-gray-700 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent resize-y mb-4" placeholder="변환된 결과가 여기에 표시됩니다."></textarea>
+                <div class="controls flex justify-end mt-4">
+                    <button id="copyButton" class="px-6 py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50 transition ease-in-out duration-150 shadow-md hover:shadow-lg">복사하기</button>
                 </div>
             </section>
         </main>
