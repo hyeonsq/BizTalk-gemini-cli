@@ -32,25 +32,59 @@ def serve_static(filename):
 def convert_text():
     """
     텍스트 변환을 위한 API 엔드포인트.
-    Sprint 1에서는 실제 변환 로직 대신 더미 데이터를 반환합니다.
+    Groq AI API를 사용하여 실제 변환 로직을 구현합니다.
     """
     data = request.json
     original_text = data.get('text')
-    target = data.get('audience') # Changed from 'target' to 'audience' to match frontend
+    audience = data.get('audience')
 
-    if not original_text or not target:
+    if not original_text or not audience:
         return jsonify({"error": "텍스트와 변환 대상은 필수입니다."}), 400
 
-    # Sprint 1: 실제 Groq API 호출 대신 더미 응답 반환
-    dummy_response = f"'{original_text}'를 '{target}'에게 보내는 말투로 변환한 결과입니다. (이것은 더미 응답입니다.)"
-    
-    response_data = {
-        "original_text": original_text,
-        "converted_text": dummy_response,
-        "target": target
+    if groq_client is None:
+        return jsonify({"error": "AI 서비스가 초기화되지 않았습니다. API 키를 확인해주세요."}), 500
+
+    # 대상별 프롬프트 정의
+    prompts = {
+        "상사": f"다음 텍스트를 상사에게 보고하기에 적합한, 정중하고 명확하며 격식 있는 비즈니스 말투로 변환해 주세요. 결론부터 제시하고 신뢰성을 강조해 주세요. 원문: '{original_text}'",
+        "타팀 동료": f"다음 텍스트를 타팀 동료에게 협조를 요청하거나 정보를 공유하기에 적합한, 친절하고 상호 존중하는 비즈니스 말투로 변환해 주세요. 요청 사항과 마감 기한을 명확히 전달해 주세요. 원문: '{original_text}'",
+        "고객": f"다음 텍스트를 고객에게 안내하거나 응대하기에 적합한, 극존칭을 사용하며 전문성과 서비스 마인드를 강조하는 비즈니스 말투로 변환해 주세요. 원문: '{original_text}'"
     }
-    
-    return jsonify(response_data)
+
+    system_message = prompts.get(audience)
+
+    if not system_message:
+        return jsonify({"error": "유효하지 않은 변환 대상입니다."}), 400
+
+    try:
+        chat_completion = groq_client.chat.completions.create(
+            messages=[
+                {
+                    "role": "system",
+                    "content": system_message,
+                },
+                {
+                    "role": "user",
+                    "content": original_text,
+                }
+            ],
+            model="moonshotai/kimi-k2-instruct-0905",
+            temperature=0.7, # 텍스트 변환의 창의성을 조절
+            max_tokens=1024, # 생성될 최대 토큰 수
+        )
+        converted_text = chat_completion.choices[0].message.content
+        
+        response_data = {
+            "original_text": original_text,
+            "converted_text": converted_text,
+            "audience": audience
+        }
+        
+        return jsonify(response_data)
+
+    except Exception as e:
+        print(f"Error during Groq API call: {e}")
+        return jsonify({"error": f"텍스트 변환 중 오류가 발생했습니다: {str(e)}. 잠시 후 다시 시도해주세요."}), 500
 
 if __name__ == '__main__':
     # Vercel 환경에서는 gunicorn이 이 파일을 직접 실행하지 않으므로,
